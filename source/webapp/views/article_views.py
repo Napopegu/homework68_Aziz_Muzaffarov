@@ -9,8 +9,9 @@ from webapp.models import Article
 from webapp.forms import ArticleForm, SimpleSearchForm
 from django.views.generic import View, FormView, ListView, DetailView, CreateView, UpdateView, DeleteView
 
+
 class ArticleLikesView(LoginRequiredMixin, View):
-    def post(self, request,*args, **kwargs):
+    def post(self, request, *args, **kwargs):
         user = self.request.user
         article = get_object_or_404(Article, pk=kwargs['pk'])
 
@@ -23,9 +24,11 @@ class ArticleLikesView(LoginRequiredMixin, View):
         likes_count = article.likes.count()
         return JsonResponse({'liked': liked, 'likes_count': likes_count})
 
+
 class TestView(View):
     def get(self, request, *args, **kwargs):
-        return JsonResponse([{'id':1, 'name':'test'}, {'id':2, 'name':'test2'}],safe=False)
+        return JsonResponse([{'id': 1, 'name': 'test'}, {'id': 2, 'name': 'test2'}], safe=False)
+
 
 class IndexView(ListView):
     model = Article
@@ -71,7 +74,7 @@ class ArticleView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context ['likes'] = self.object.articles_like(all)
+        context['likes'] = self.object.articles_like(all)
         context['comments'] = self.object.comments.order_by('-created_at')
         return context
 
@@ -117,8 +120,6 @@ class ArticleUpdateView(PermissionRequiredMixin, UpdateView):
     # def form_valid(self, form):
     #     form.save()
     #     return redirect('webapp:article_view', pk=self.article.pk)
-
-
 
 
 class ArticleDeleteView(UserPassesTestMixin, DeleteView):
