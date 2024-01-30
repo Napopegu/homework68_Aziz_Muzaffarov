@@ -1,25 +1,35 @@
-async function makeRequest(url, method='GET') {
-        let response = await fetch(url, {method});
+async function makeRequest(url, method = 'GET') {
+    let response = await fetch(url, {method});
 
-        if (response.ok) {
-            return await response.json();
-        } else {
-            let error = new Error(response.statusText);
-            error.response = response;
-            throw error;
-        }
-
+    if (response.ok) {
+        return await response.json();
+    } else {
+        let error = new Error(response.status);
+        error.response = response;
+        throw error;
     }
 
-async function onClick2(e){
-        e.preventDefault()
-    let b = e.target;
-        let data = await makeRequest(b.dataset['test']);
-        console.log(data);
-    }
+}
 
-    function onLoad(){
-        let button = document.getElementById('button1');
-        button.addEventListener('click', onClick2)
+async function onClickLike(e) {
+    e.preventDefault()
+    let button = e.target;
+    let articleId = button.dataset['articleId'];
+    let data = await makeRequest(`/article/${articleId}/like/`, 'GET');
+
+    if (data.liked) {
+        button.innerText = 'Анлайк';
+    } else {
+        button.innerText = 'Лайк';
     }
-    window.addEventListener('load', onLoad);
+    document.getElementById(`likes-count-${articleId}`).innerText = data.likes_count;
+}
+
+function onLoad() {
+    let likeButtons= document.querySelectorAll('.like-button');
+    likeButtons.forEach(button => {
+        button.addEventListener('click', onClickLike);
+    });
+}
+
+window.addEventListener('load', onLoad);

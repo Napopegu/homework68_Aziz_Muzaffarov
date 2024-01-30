@@ -11,7 +11,7 @@ from django.views.generic import View, FormView, ListView, DetailView, CreateVie
 
 
 class ArticleLikesView(LoginRequiredMixin, View):
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
         user = self.request.user
         article = get_object_or_404(Article, pk=kwargs['pk'])
 
@@ -22,6 +22,7 @@ class ArticleLikesView(LoginRequiredMixin, View):
             article.likes.add(user)
             liked = True
         likes_count = article.likes.count()
+        print("11111111111111111111111111111")
         return JsonResponse({'liked': liked, 'likes_count': likes_count})
 
 
@@ -74,7 +75,7 @@ class ArticleView(DetailView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['likes'] = self.object.articles_like(all)
+        context['likes'] = self.object.likes.all()
         context['comments'] = self.object.comments.order_by('-created_at')
         return context
 
