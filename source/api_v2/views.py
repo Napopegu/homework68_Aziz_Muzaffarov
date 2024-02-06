@@ -44,6 +44,7 @@ class ArticleView(APIView):
             #     return JsonResponse(serializer.data, safe=False)
             # return JsonResponse({'error': serializer.errors}, status=400)
             serializer.is_valid(raise_exception=True)
+            serializer.save()
             return Response(serializer.data)
 
 
